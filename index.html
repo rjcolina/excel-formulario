@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Diagnóstico inicial de Excel</title>
+  <style>
+    :root {
+      --primary: #253b6f;
+      --secondary: #1794cb;
+      --accent: #ffdb58;
+      --bg: #f5f8fc;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --card: #ffffff;
+      --border: #dbe4f0;
+      --success-bg: #e8f7ee;
+      --success-border: #cfe9d8;
+      --success-text: #155e3b;
+      --danger: #b91c1c;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #eef4fb 0%, #f8fbff 100%);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .wrap {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 18px 56px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #fff;
+      border-radius: 22px;
+      padding: 30px 24px;
+      box-shadow: 0 18px 45px rgba(37, 59, 111, 0.18);
+      margin-bottom: 22px;
+    }
+
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: 30px;
+      line-height: 1.15;
+    }
+
+    .hero p {
+      margin: 0;
+      font-size: 16px;
+      max-width: 680px;
+      opacity: 0.96;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 12px 30px rgba(24, 39, 75, 0.06);
+    }
+
+    .intro {
+      margin-bottom: 24px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .section-title {
+      margin: 28px 0 10px;
+      font-size: 18px;
+      color: var(--primary);
+    }
+
+    .field {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .hint {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: -2px;
+      margin-bottom: 8px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 14px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      font-size: 15px;
+      background: #fff;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 4px rgba(23, 148, 203, 0.12);
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .options {
+      display: grid;
+      gap: 10px;
+    }
+
+    .option {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fbfdff;
+      cursor: pointer;
+    }
+
+    .option input {
+      margin-top: 2px;
+      cursor: pointer;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 26px;
+    }
+
+    button {
+      border: none;
+      border-radius: 14px;
+      padding: 14px 18px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    .primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .secondary {
+      background: #eef4fb;
+      color: var(--primary);
+      border: 1px solid var(--border);
+    }
+
+    .result,
+    .error-box,
+    .loading-box {
+      display: none;
+      margin-top: 22px;
+      padding: 18px;
+      border-radius: 16px;
+    }
+
+    .result {
+      background: var(--success-bg);
+      border: 1px solid var(--success-border);
+    }
+
+    .result h3 {
+      margin: 0 0 8px;
+      color: var(--success-text);
+    }
+
+    .result p {
+      margin: 6px 0;
+    }
+
+    .tag {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: white;
+      border: 1px solid #bde1c7;
+      font-weight: 700;
+      color: var(--success-text);
+      font-size: 13px;
+    }
+
+    .error-box {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: var(--danger);
+    }
+
+    .loading-box {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1d4ed8;
+    }
+
+    .footer-note {
+      margin-top: 24px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 640px) {
+      .hero h1 {
+        font-size: 25px;
+      }
+
+      .card {
+        padding: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>Cuéntame qué necesitas con Excel</h1>
+      <p>
+        Completa este formulario y así podré entender mejor tu necesidad, orientarte de forma más precisa
+        y proponerte una ayuda que realmente se ajuste a lo que buscas.
+      </p>
+    </section>
+
+    <section class="card">
+      <p class="intro">
+        Son preguntas rápidas. La idea no es complicarte, sino identificar si necesitas aprender lo básico,
+        resolver algo puntual o trabajar una solución más completa.
+      </p>
+
+      <form id="excelForm">
+        <h2 class="section-title">Tus datos</h2>
+
+        <div class="field">
+          <label for="nombre">Nombre</label>
+          <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required />
+        </div>
+
+        <div class="field">
+          <label for="correo">Correo o medio de contacto</label>
+          <input type="email" id="correo" name="correo" placeholder="ejemplo@correo.com" required />
+        </div>
+
+        <h2 class="section-title">Tu contexto</h2>
+
+        <div class="field">
+          <label for="ocupacion">¿A qué te dedicas actualmente?</label>
+          <input type="text" id="ocupacion" name="ocupacion" placeholder="Ej: inventario, ventas, administración, logística" />
+        </div>
+
+        <div class="field">
+          <label for="uso">¿Para qué quieres usar Excel principalmente?</label>
+          <select id="uso" name="uso" required>
+            <option value="">Selecciona una opción</option>
+            <option value="Organizar información">Organizar información</option>
+            <option value="Hacer reportes o análisis">Hacer reportes o análisis</option>
+            <option value="Controlar inventario o movimientos">Controlar inventario o movimientos</option>
+            <option value="Ahorrar tiempo o automatizar tareas">Ahorrar tiempo o automatizar tareas</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+
+        <h2 class="section-title">Tu nivel actual</h2>
+
+        <div class="field">
+          <label>¿Qué tan cómodo te sientes usando Excel?</label>
+          <div class="options">
+            <label class="option">
+              <input type="radio" name="nivel" value="Básico" required />
+              Básico: uso muy poco Excel o casi nada
+            </label>
+            <label class="option">
+              <input type="radio" name="nivel" value="Intermedio" />
+              Intermedio: uso fórmulas sencillas y manejo lo esencial
+            </label>
+            <label class="option">
+              <input type="radio" name="nivel" value="Avanzado" />
+              Avanzado: manejo tablas, fórmulas complejas o reportes
+            </label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="sabe">¿Qué cosas ya sabes hacer en Excel?</label>
+          <span class="hint">Ej: sumar, filtros, tablas, buscar datos, fórmulas, gráficos, etc.</span>
+          <textarea id="sabe" name="sabe" placeholder="Cuéntame brevemente qué ya manejas"></textarea>
+        </div>
+
+        <h2 class="section-title">Lo que realmente necesitas</h2>
+
+        <div class="field">
+          <label for="problema">¿Qué problema específico quieres resolver?</label>
+          <span class="hint">Mientras más concreto seas, mejor podré ayudarte.</span>
+          <textarea
+            id="problema"
+            name="problema"
+            placeholder="Ej: pierdo tiempo haciendo reportes, no sé cómo llevar el inventario, necesito entender fórmulas puntuales, etc."
+            required
+          ></textarea>
+        </div>
+
+        <div class="field">
+          <label>¿Qué tipo de ayuda estás buscando?</label>
+          <div class="options">
+            <label class="option">
+              <input type="radio" name="ayuda" value="Aprender lo básico" required />
+              Aprender lo básico para defenderme mejor
+            </label>
+            <label class="option">
+              <input type="radio" name="ayuda" value="Resolver algo puntual" />
+              Resolver algo puntual que ya necesito
+            </label>
+            <label class="option">
+              <input type="radio" name="ayuda" value="Construir algo más completo" />
+              Construir algo más completo o un sistema
+            </label>
+            <label class="option">
+              <input type="radio" name="ayuda" value="No lo tengo claro todavía" />
+              No lo tengo claro todavía
+            </label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>¿Qué tan urgente es para ti resolverlo?</label>
+          <div class="options">
+            <label class="option">
+              <input type="radio" name="urgencia" value="Alta" required />
+              Lo necesito pronto
+            </label>
+            <label class="option">
+              <input type="radio" name="urgencia" value="Media" />
+              Me gustaría ir avanzando poco a poco
+            </label>
+            <label class="option">
+              <input type="radio" name="urgencia" value="Baja" />
+              Solo estoy explorando opciones
+            </label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>¿Qué tipo de enfoque te interesaría más?</label>
+          <div class="options">
+            <label class="option">
+              <input type="radio" name="enfoque" value="Algo económico y práctico" required />
+              Algo económico y práctico
+            </label>
+            <label class="option">
+              <input type="radio" name="enfoque" value="Acompañamiento personalizado" />
+              Acompañamiento personalizado
+            </label>
+            <label class="option">
+              <input type="radio" name="enfoque" value="Una solución más estructurada y completa" />
+              Una solución más estructurada y completa
+            </label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="impacto">Si logras resolver esto con Excel, ¿qué mejoraría en tu trabajo o día a día?</label>
+          <textarea id="impacto" name="impacto" placeholder="Ej: ahorraría tiempo, tendría mejor control, cometería menos errores, etc."></textarea>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="primary" id="submitBtn">Enviar diagnóstico</button>
+          <button type="reset" class="secondary">Limpiar formulario</button>
+        </div>
+      </form>
+
+      <div id="loadingBox" class="loading-box">
+        Enviando formulario...
+      </div>
+
+      <div id="result" class="result">
+        <h3>Diagnóstico enviado correctamente</h3>
+        <p id="resultText"></p>
+        <span id="resultTag" class="tag"></span>
+      </div>
+
+      <div id="errorBox" class="error-box"></div>
+
+      <p class="footer-note">
+        Puedes usar esta página como formulario inicial y, según las respuestas, continuar con una propuesta sencilla,
+        una sesión puntual o una solución completa.
+      </p>
+    </section>
+  </div>
+
+  <script>
+    const form = document.getElementById('excelForm');
+    const result = document.getElementById('result');
+    const resultText = document.getElementById('resultText');
+    const resultTag = document.getElementById('resultTag');
+    const errorBox = document.getElementById('errorBox');
+    const loadingBox = document.getElementById('loadingBox');
+    const submitBtn = document.getElementById('submitBtn');
+
+    // Reemplaza esto por la URL real de tu Apps Script terminada en /exec
+    const scriptURL = 'https://script.google.com/macros/s/AKfycby2Nrd81yHlnyfcDpgyjThcWG_LAah-2_of8kqR0fbQCifKLmgXVDQs7qlISCfRsmrH/exec';
+
+    function ocultarMensajes() {
+      result.style.display = 'none';
+      errorBox.style.display = 'none';
+      loadingBox.style.display = 'none';
+      errorBox.textContent = '';
+    }
+
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      ocultarMensajes();
+
+      const formData = new FormData(form);
+
+      const nombre = formData.get('nombre') || 'La persona';
+      const nivel = formData.get('nivel');
+      const ayuda = formData.get('ayuda');
+      const urgencia = formData.get('urgencia');
+      const enfoque = formData.get('enfoque');
+
+      let categoria = 'Perfil: por definir';
+      let mensaje = `${nombre} necesita una orientación inicial para definir el siguiente paso más adecuado.`;
+
+      if (
+        ayuda === 'Aprender lo básico' ||
+        (nivel === 'Básico' && enfoque === 'Algo económico y práctico')
+      ) {
+        categoria = 'Perfil: formación básica';
+        mensaje = `${nombre} parece necesitar una ayuda práctica y directa, enfocada en aprender lo esencial de Excel sin entrar todavía en una solución compleja.`;
+      } else if (ayuda === 'Resolver algo puntual' || urgencia === 'Alta') {
+        categoria = 'Perfil: solución puntual';
+        mensaje = `${nombre} muestra una necesidad concreta y probablemente valora resolver un problema específico con rapidez antes que tomar una formación muy amplia.`;
+      } else if (
+        ayuda === 'Construir algo más completo' ||
+        enfoque === 'Una solución más estructurada y completa' ||
+        nivel === 'Avanzado'
+      ) {
+        categoria = 'Perfil: solución estructurada';
+        mensaje = `${nombre} podría beneficiarse de un abordaje más completo, ya sea una capacitación personalizada o una solución más desarrollada según su caso.`;
+      }
+
+      try {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Enviando...';
+        loadingBox.style.display = 'block';
+
+        const response = await fetch(scriptURL, {
+          method: 'POST',
+          body: new URLSearchParams(formData)
+        });
+
+        const responseText = await response.text();
+        console.log('Respuesta del servidor:', responseText);
+
+        if (!response.ok) {
+          throw new Error(`Error HTTP ${response.status}: ${responseText}`);
+        }
+
+        loadingBox.style.display = 'none';
+        resultText.textContent = mensaje;
+        resultTag.textContent = categoria;
+        result.style.display = 'block';
+        result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        form.reset();
+      } catch (error) {
+        console.error('Error completo:', error);
+        loadingBox.style.display = 'none';
+        errorBox.textContent = 'No se pudo enviar el formulario. Revisa la URL del Apps Script, que el despliegue sea público y vuelve a probar.';
+        errorBox.style.display = 'block';
+        errorBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Enviar diagnóstico';
+      }
+    });
+  </script>
+</body>
+</html>
