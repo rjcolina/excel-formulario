@@ -3,15 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Diagnóstico inicial de Excel</title>
+  <title>Formulario de diagnóstico Excel — Collinfy</title>
   <style>
     :root {
       --primary: #253b6f;
       --secondary: #1794cb;
+      --accent: #ffdb58;
+      --bg: #f5f8fc;
       --text: #1f2937;
       --muted: #6b7280;
       --card: #ffffff;
       --border: #dbe4f0;
+      --success: #e8f7ee;
     }
 
     * { box-sizing: border-box; }
@@ -25,14 +28,14 @@
     }
 
     .wrap {
-      max-width: 860px;
+      max-width: 820px;
       margin: 0 auto;
       padding: 32px 18px 56px;
     }
 
     .hero {
       background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: #fff;
+      color: white;
       border-radius: 22px;
       padding: 30px 24px;
       box-shadow: 0 18px 45px rgba(37, 59, 111, 0.18);
@@ -48,8 +51,8 @@
     .hero p {
       margin: 0;
       font-size: 16px;
-      max-width: 680px;
-      opacity: 0.96;
+      max-width: 650px;
+      opacity: 0.95;
     }
 
     .card {
@@ -95,17 +98,25 @@
     select,
     textarea {
       width: 100%;
-      padding: 14px 14px;
+      padding: 14px;
       border-radius: 12px;
       border: 1px solid var(--border);
       font-size: 15px;
       background: #fff;
       color: var(--text);
       outline: none;
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 4px rgba(23, 148, 203, 0.12);
     }
 
     textarea {
-      min-height: 120px;
+      min-height: 110px;
       resize: vertical;
     }
 
@@ -123,6 +134,17 @@
       border-radius: 14px;
       background: #fbfdff;
       cursor: pointer;
+      transition: border-color .15s ease, background .15s ease;
+    }
+
+    .option:hover {
+      border-color: var(--secondary);
+      background: #f0f8ff;
+    }
+
+    .option input {
+      margin-top: 3px;
+      flex-shrink: 0;
     }
 
     .actions {
@@ -135,21 +157,58 @@
     button {
       border: none;
       border-radius: 14px;
-      padding: 14px 18px;
+      padding: 14px 22px;
       font-size: 15px;
       font-weight: 700;
       cursor: pointer;
+      transition: transform .15s ease, opacity .15s ease;
     }
 
-    .primary {
+    button:hover { transform: translateY(-1px); }
+    button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .btn-primary {
       background: var(--primary);
       color: white;
+      flex: 1;
+      min-width: 180px;
     }
 
-    .secondary {
+    .btn-secondary {
       background: #eef4fb;
       color: var(--primary);
       border: 1px solid var(--border);
+    }
+
+    .result {
+      display: none;
+      margin-top: 22px;
+      padding: 22px;
+      border-radius: 16px;
+      background: var(--success);
+      border: 1px solid #cfe9d8;
+    }
+
+    .result h3 {
+      margin: 0 0 8px;
+      color: #155e3b;
+    }
+
+    .result p {
+      margin: 6px 0;
+      color: #1e4a30;
+    }
+
+    .tag {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 7px 14px;
+      border-radius: 999px;
+      background: white;
+      border: 1px solid #bde1c7;
+      font-weight: 700;
+      color: #155e3b;
+      font-size: 13px;
     }
 
     .footer-note {
@@ -159,8 +218,9 @@
     }
 
     @media (max-width: 640px) {
-      .hero h1 { font-size: 25px; }
-      .card { padding: 18px; }
+      .hero h1 { font-size: 24px; }
+      .card { padding: 16px; }
+      .btn-primary { min-width: 100%; }
     }
   </style>
 </head>
@@ -169,118 +229,286 @@
     <section class="hero">
       <h1>Cuéntame qué necesitas con Excel</h1>
       <p>
-        Completa este formulario para entender mejor tu necesidad y poder orientarte de forma más precisa.
+        Completa este formulario y así podré entender mejor tu necesidad, orientarte de forma más precisa
+        y proponerte una ayuda que realmente se ajuste a lo que buscas.
       </p>
     </section>
 
     <section class="card">
       <p class="intro">
-        Son preguntas rápidas para identificar si necesitas aprender lo básico, resolver algo puntual o trabajar una solución más completa.
+        Son preguntas rápidas. La idea no es complicarte, sino identificar si necesitas aprender lo básico,
+        resolver algo puntual o trabajar una solución más completa.
       </p>
 
-      <form id="excelForm" action="https://formsubmit.co/contacto@tekpaz.com" method="POST">
-        <input type="hidden" name="_subject" value="Nuevo diagnóstico Excel">
-        <input type="hidden" name="_captcha" value="false">
-        <input type="hidden" name="_template" value="table">
+      <form id="excelForm">
 
+        <!-- ── DATOS PERSONALES ── -->
         <h2 class="section-title">Tus datos</h2>
 
         <div class="field">
           <label for="nombre">Nombre</label>
-          <input type="text" id="nombre" name="Nombre" placeholder="Tu nombre" required />
+          <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required />
         </div>
 
         <div class="field">
           <label for="correo">Correo o medio de contacto</label>
-          <input type="email" id="correo" name="Correo" placeholder="ejemplo@correo.com" required />
+          <input type="email" id="correo" name="correo" placeholder="ejemplo@correo.com" required />
         </div>
 
+        <!-- ── EMPRESA E INDUSTRIA (NUEVO) ── -->
+        <h2 class="section-title">Tu empresa</h2>
+
+        <div class="field">
+          <label for="empresa">¿En qué empresa trabajas?</label>
+          <input type="text" id="empresa" name="empresa" placeholder="Nombre de tu empresa u organización" />
+        </div>
+
+        <div class="field">
+          <label for="industria">¿A qué sector pertenece?</label>
+          <select id="industria" name="industria" required>
+            <option value="">Selecciona una opción</option>
+            <option value="electrica">Eléctrica / Energía</option>
+            <option value="manufactura">Manufactura / Producción</option>
+            <option value="logistica">Logística / Distribución</option>
+            <option value="construccion">Construcción / Infraestructura</option>
+            <option value="mineria">Minería / Petróleo y Gas</option>
+            <option value="servicios_ind">Servicios industriales</option>
+            <option value="admin_rrhh">Administración / RRHH</option>
+            <option value="comercio">Comercio / Retail</option>
+            <option value="otro">Otro</option>
+          </select>
+        </div>
+
+        <!-- ── CONTEXTO ── -->
         <h2 class="section-title">Tu contexto</h2>
 
         <div class="field">
-          <label for="ocupacion">¿A qué te dedicas actualmente?</label>
-          <input type="text" id="ocupacion" name="Ocupación" placeholder="Ej: inventario, ventas, administración, logística" />
+          <label for="ocupacion">¿A qué te dedicas dentro de la empresa?</label>
+          <input type="text" id="ocupacion" name="ocupacion" placeholder="Ej: inventario, ventas, administración, logística, RRHH" />
         </div>
 
         <div class="field">
           <label for="uso">¿Para qué quieres usar Excel principalmente?</label>
-          <select id="uso" name="Uso principal" required>
+          <select id="uso" name="uso" required>
             <option value="">Selecciona una opción</option>
-            <option value="Organizar información">Organizar información</option>
-            <option value="Hacer reportes o análisis">Hacer reportes o análisis</option>
-            <option value="Controlar inventario o movimientos">Controlar inventario o movimientos</option>
-            <option value="Ahorrar tiempo o automatizar tareas">Ahorrar tiempo o automatizar tareas</option>
-            <option value="Otro">Otro</option>
+            <option value="organizar">Organizar información</option>
+            <option value="reportes">Hacer reportes o análisis</option>
+            <option value="indicadores">Construir indicadores de gestión</option>
+            <option value="inventario">Controlar inventario o movimientos</option>
+            <option value="automatizar">Ahorrar tiempo o automatizar tareas</option>
+            <option value="rrhh">Cálculos de RRHH o nómina</option>
+            <option value="otro">Otro</option>
           </select>
         </div>
 
+        <!-- ── NIVEL ACTUAL ── -->
         <h2 class="section-title">Tu nivel actual</h2>
 
         <div class="field">
           <label>¿Qué tan cómodo te sientes usando Excel?</label>
           <div class="options">
-            <label class="option"><input type="radio" name="Nivel" value="Básico" required /> Básico: uso muy poco Excel o casi nada</label>
-            <label class="option"><input type="radio" name="Nivel" value="Intermedio" /> Intermedio: uso fórmulas sencillas y manejo lo esencial</label>
-            <label class="option"><input type="radio" name="Nivel" value="Avanzado" /> Avanzado: manejo tablas, fórmulas complejas o reportes</label>
+            <label class="option"><input type="radio" name="nivel" value="basico" required /> Básico — uso muy poco Excel o casi nada</label>
+            <label class="option"><input type="radio" name="nivel" value="intermedio" /> Intermedio — uso fórmulas sencillas y manejo lo esencial</label>
+            <label class="option"><input type="radio" name="nivel" value="avanzado" /> Avanzado — manejo tablas, fórmulas complejas o reportes</label>
           </div>
         </div>
 
         <div class="field">
           <label for="sabe">¿Qué cosas ya sabes hacer en Excel?</label>
           <span class="hint">Ej: sumar, filtros, tablas, buscar datos, fórmulas, gráficos, etc.</span>
-          <textarea id="sabe" name="Qué sabe hacer" placeholder="Cuéntame brevemente qué ya manejas"></textarea>
+          <textarea id="sabe" name="sabe" placeholder="Cuéntame brevemente qué ya manejas"></textarea>
         </div>
 
+        <!-- ── LO QUE REALMENTE NECESITAS ── -->
         <h2 class="section-title">Lo que realmente necesitas</h2>
 
         <div class="field">
           <label for="problema">¿Qué problema específico quieres resolver?</label>
-          <textarea id="problema" name="Problema" required placeholder="Ej: pierdo tiempo haciendo reportes, no sé cómo llevar el inventario, necesito entender fórmulas puntuales, etc."></textarea>
+          <span class="hint">Mientras más concreto seas, mejor podré ayudarte.</span>
+          <textarea id="problema" name="problema" placeholder="Ej: pierdo tiempo haciendo reportes, no sé cómo llevar el inventario, necesito construir un tablero de indicadores, etc." required></textarea>
         </div>
 
         <div class="field">
           <label>¿Qué tipo de ayuda estás buscando?</label>
           <div class="options">
-            <label class="option"><input type="radio" name="Tipo de ayuda" value="Aprender lo básico" required /> Aprender lo básico para defenderme mejor</label>
-            <label class="option"><input type="radio" name="Tipo de ayuda" value="Resolver algo puntual" /> Resolver algo puntual que ya necesito</label>
-            <label class="option"><input type="radio" name="Tipo de ayuda" value="Construir algo más completo" /> Construir algo más completo o un sistema</label>
-            <label class="option"><input type="radio" name="Tipo de ayuda" value="No lo tengo claro todavía" /> No lo tengo claro todavía</label>
+            <label class="option"><input type="radio" name="ayuda" value="basica" required /> Aprender lo básico para defenderme mejor</label>
+            <label class="option"><input type="radio" name="ayuda" value="puntual" /> Resolver algo puntual que ya necesito</label>
+            <label class="option"><input type="radio" name="ayuda" value="completa" /> Construir algo más completo o un sistema</label>
+            <label class="option"><input type="radio" name="ayuda" value="nose" /> No lo tengo claro todavía</label>
           </div>
         </div>
 
         <div class="field">
           <label>¿Qué tan urgente es para ti resolverlo?</label>
           <div class="options">
-            <label class="option"><input type="radio" name="Urgencia" value="Alta" required /> Lo necesito pronto</label>
-            <label class="option"><input type="radio" name="Urgencia" value="Media" /> Me gustaría ir avanzando poco a poco</label>
-            <label class="option"><input type="radio" name="Urgencia" value="Baja" /> Solo estoy explorando opciones</label>
+            <label class="option"><input type="radio" name="urgencia" value="alta" required /> Lo necesito pronto</label>
+            <label class="option"><input type="radio" name="urgencia" value="media" /> Me gustaría ir avanzando poco a poco</label>
+            <label class="option"><input type="radio" name="urgencia" value="baja" /> Solo estoy explorando opciones</label>
           </div>
         </div>
 
         <div class="field">
           <label>¿Qué tipo de enfoque te interesaría más?</label>
           <div class="options">
-            <label class="option"><input type="radio" name="Enfoque" value="Algo económico y práctico" required /> Algo económico y práctico</label>
-            <label class="option"><input type="radio" name="Enfoque" value="Acompañamiento personalizado" /> Acompañamiento personalizado</label>
-            <label class="option"><input type="radio" name="Enfoque" value="Una solución más estructurada y completa" /> Una solución más estructurada y completa</label>
+            <label class="option"><input type="radio" name="enfoque" value="economico" required /> Algo económico y práctico</label>
+            <label class="option"><input type="radio" name="enfoque" value="acompanamiento" /> Acompañamiento personalizado</label>
+            <label class="option"><input type="radio" name="enfoque" value="solucion" /> Una solución más estructurada y completa</label>
+          </div>
+        </div>
+
+        <!-- ── INVERSIÓN (NUEVO) ── -->
+        <div class="field">
+          <label>¿Cuánto estarías dispuesto a invertir para resolver esto?</label>
+          <span class="hint">Esto nos ayuda a orientarte hacia la opción más adecuada para ti.</span>
+          <div class="options">
+            <label class="option"><input type="radio" name="inversion" value="menos50" required /> Menos de $50 — busco algo accesible</label>
+            <label class="option"><input type="radio" name="inversion" value="50a100" /> $50 – $100 — estoy dispuesto a invertir si vale la pena</label>
+            <label class="option"><input type="radio" name="inversion" value="100a200" /> $100 – $200 — si resuelve mi problema, adelante</label>
+            <label class="option"><input type="radio" name="inversion" value="mas200" /> Más de $200 — el precio no es mi prioridad si la solución es buena</label>
+            <label class="option"><input type="radio" name="inversion" value="nodefinido" /> Todavía no lo tengo definido</label>
           </div>
         </div>
 
         <div class="field">
-          <label for="impacto">Si logras resolver esto con Excel, ¿qué mejoraría en tu trabajo o día a día?</label>
-          <textarea id="impacto" name="Impacto" placeholder="Ej: ahorraría tiempo, tendría mejor control, cometería menos errores, etc."></textarea>
+          <label for="impacto">Si logras resolver esto con Excel, ¿qué mejoraría en tu trabajo?</label>
+          <textarea id="impacto" name="impacto" placeholder="Ej: ahorraría tiempo, tendría mejor control, cometería menos errores, podría hacer mejores reportes, etc."></textarea>
         </div>
 
         <div class="actions">
-          <button type="submit" class="primary">Enviar diagnóstico</button>
-          <button type="reset" class="secondary">Limpiar formulario</button>
+          <button type="submit" class="btn-primary" id="btnEnviar">Enviar diagnóstico</button>
+          <button type="reset" class="btn-secondary">Limpiar</button>
         </div>
       </form>
 
+      <div id="result" class="result">
+        <h3>¡Listo! Tu diagnóstico fue enviado 🎉</h3>
+        <p id="resultText"></p>
+        <span id="resultTag" class="tag"></span>
+        <p style="margin-top:12px; font-size:14px;">Me estaré comunicando contigo pronto para conversar sobre los siguientes pasos.</p>
+      </div>
+
       <p class="footer-note">
-        Una vez reciba tus respuestas, revisaré tu caso para orientarte mejor.
+        Tus respuestas son confidenciales y solo serán usadas para orientarte mejor.
       </p>
     </section>
   </div>
+
+  <script>
+    const form = document.getElementById('excelForm');
+    const result = document.getElementById('result');
+    const resultText = document.getElementById('resultText');
+    const resultTag = document.getElementById('resultTag');
+    const btnEnviar = document.getElementById('btnEnviar');
+
+    // URL del Google Apps Script
+    const scriptURL = 'https://script.google.com/macros/s/AKfycby2Nrd81yHlnyfcDpgyjThcWG_LAah-2_of8kqR0fbQCifKLmgXVDQs7qlISCfRsmrH/exec';
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+
+      // Agregar timestamp
+      data.timestamp = new Date().toISOString();
+
+      // Clasificación del perfil
+      const nombre = data.nombre || 'La persona';
+      const nivel = data.nivel;
+      const ayuda = data.ayuda;
+      const urgencia = data.urgencia;
+      const enfoque = data.enfoque;
+      const inversion = data.inversion;
+
+      let categoria = 'Diagnóstico general';
+      let mensaje = '';
+
+      if (ayuda === 'basica' || (nivel === 'basico' && enfoque === 'economico')) {
+        categoria = 'Perfil: formación básica';
+        mensaje = `${nombre} necesita una ayuda práctica y directa, enfocada en aprender lo esencial de Excel para su trabajo.`;
+      } else if (ayuda === 'puntual' || urgencia === 'alta') {
+        categoria = 'Perfil: solución puntual';
+        mensaje = `${nombre} tiene una necesidad concreta y valora resolver un problema específico con rapidez.`;
+      } else if (ayuda === 'completa' || enfoque === 'solucion' || nivel === 'avanzado') {
+        categoria = 'Perfil: solución estructurada';
+        mensaje = `${nombre} puede beneficiarse de un abordaje más completo — capacitación personalizada o una solución desarrollada a medida.`;
+      } else {
+        categoria = 'Perfil: por definir';
+        mensaje = `${nombre} necesita orientación inicial para aterrizar lo que busca y definir el siguiente paso.`;
+      }
+
+      // Agregar nota de inversión al perfil
+      const inversionTextos = {
+        'menos50': 'Inversión esperada: menos de $50',
+        '50a100': 'Inversión esperada: $50–$100',
+        '100a200': 'Inversión esperada: $100–$200',
+        'mas200': 'Inversión esperada: más de $200',
+        'nodefinido': 'Inversión: por definir'
+      };
+      if (inversion && inversionTextos[inversion]) {
+        mensaje += ' · ' + inversionTextos[inversion] + '.';
+      }
+
+      // Deshabilitar botón mientras se envía
+      btnEnviar.disabled = true;
+      btnEnviar.textContent = 'Enviando...';
+
+      // Enviar con URLSearchParams (evita CORS preflight con Apps Script)
+      const params = new URLSearchParams(data);
+
+      fetch(scriptURL, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: params
+      }).finally(function () {
+        // Mostrar resultado siempre (no-cors no permite leer la respuesta)
+        resultText.textContent = mensaje;
+        resultTag.textContent = categoria;
+        result.style.display = 'block';
+        result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        form.style.display = 'none';
+      });
+    });
+  </script>
+
+  <!--
+  ══════════════════════════════════════════════════════════════════
+  APPS SCRIPT — Pega este código en tu proyecto de Google Apps Script
+  (script.google.com) y vuelve a desplegarlo como aplicación web
+  con acceso: "Cualquier persona, incluso anónima"
+  ══════════════════════════════════════════════════════════════════
+
+  function doPost(e) {
+    try {
+      var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+
+      var data = e.parameter;
+
+      var headers = [
+        'timestamp','nombre','correo','empresa','industria',
+        'ocupacion','uso','nivel','sabe','problema',
+        'ayuda','urgencia','enfoque','inversion','impacto'
+      ];
+
+      if (sheet.getLastRow() === 0) {
+        sheet.appendRow(headers);
+      }
+
+      var row = headers.map(function(h) { return data[h] || ''; });
+      sheet.appendRow(row);
+
+      return ContentService
+        .createTextOutput(JSON.stringify({ status: 'ok' }))
+        .setMimeType(ContentService.MimeType.JSON);
+
+    } catch(err) {
+      return ContentService
+        .createTextOutput(JSON.stringify({ status: 'error', message: err.toString() }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+  ══════════════════════════════════════════════════════════════════
+  -->
+
 </body>
 </html>
