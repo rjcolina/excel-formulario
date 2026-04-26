@@ -381,10 +381,16 @@
       </form>
 
       <div id="result" class="result">
+        <div style="text-align:center; margin-bottom:16px;">
+          <img src="logo.png" alt="Collinfy" style="max-height:52px; max-width:180px; object-fit:contain;" onerror="this.style.display='none'" />
+        </div>
         <h3>¡Listo! Tu diagnóstico fue enviado 🎉</h3>
         <p id="resultText"></p>
         <span id="resultTag" class="tag"></span>
         <p style="margin-top:12px; font-size:14px;">Me estaré comunicando contigo pronto para conversar sobre los siguientes pasos.</p>
+        <p style="margin-top:18px; font-size:12px; color:#6b7280; text-align:center;">
+          © Collinfy 2026 · Todos los derechos reservados
+        </p>
       </div>
 
       <p class="footer-note">
@@ -467,6 +473,9 @@
         result.style.display = 'block';
         result.scrollIntoView({ behavior: 'smooth', block: 'start' });
         form.style.display = 'none';
+        // Ocultar el texto de introducción
+        var intro = document.querySelector('.intro');
+        if (intro) intro.style.display = 'none';
       });
     });
   </script>
